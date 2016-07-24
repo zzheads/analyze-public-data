@@ -1,6 +1,7 @@
 package com.zzheads.analizePD.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class Country {
@@ -9,18 +10,18 @@ public class Country {
         //    internetUsers: DECIMAL(11,8) - A number with a maximum length of 11 digits and 8 digits of decimal precision
         //    adultLiteracyRate: DECIMAL(11,8) - A number with a maximum length of 11 digits and 8 digits of decimal precision
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code;
     @Column
     private String name;
     @Column
-    private String internetUsers;
+    private BigDecimal internetUsers;
     @Column
-    private String adultLiteracyRate;
+    private BigDecimal adultLiteracyRate;
 
     public Country () {}
 
     public Country (CountryBuilder builder) {
+        //this.code = builder.code;
         this.name = builder.name;
         this.internetUsers = builder.internetUsers;
         this.adultLiteracyRate = builder.adultLiteracyRate;
@@ -42,48 +43,53 @@ public class Country {
         this.name = name;
     }
 
-    public String getInternetUsers() {
+    public BigDecimal getInternetUsers() {
         return internetUsers;
     }
 
-    public void setInternetUsers(String internetUsers) {
+    public void setInternetUsers(BigDecimal internetUsers) {
         this.internetUsers = internetUsers;
     }
 
-    public String getAdultLiteracyRate() {
+    public BigDecimal getAdultLiteracyRate() {
         return adultLiteracyRate;
     }
 
-    public void setAdultLiteracyRate(String adultLiteracyRate) {
+    public void setAdultLiteracyRate(BigDecimal adultLiteracyRate) {
         this.adultLiteracyRate = adultLiteracyRate;
     }
 
     @Override
     public String toString() {
-        return "Country{" +
-                "code=" + code +
-                ", name='" + name + '\'' +
-                ", internetUsers=" + internetUsers +
-                ", adultLiteracyRate=" + adultLiteracyRate +
-                '}';
+        String div = " | ";
+        String percent = "%";
+        String codeStr = String.format("%3s", code);
+        String nameStr = String.format("%-32s", name);
+        String internetUsersStr = "           -  ";
+        String adultLiteracyRateStr = "     -  ";
+        if (internetUsers!=null) internetUsersStr = String.format("%13.2f", internetUsers)+percent;
+        if (adultLiteracyRate!=null) adultLiteracyRateStr = String.format("%7.2f", adultLiteracyRate)+percent;
+
+        return div+codeStr+div+nameStr+div+internetUsersStr+div+adultLiteracyRateStr+div;
     }
 
     public static class CountryBuilder {
         private String code;
         private String name;
-        private String internetUsers;
-        private String adultLiteracyRate;
+        private BigDecimal internetUsers;
+        private BigDecimal adultLiteracyRate;
 
         public CountryBuilder (String name) {
             this.name = name;
+            code = name.substring(0,3).toUpperCase();
         }
 
-        public CountryBuilder withInternetUsers (String internetUsers) {
+        public CountryBuilder withInternetUsers (BigDecimal internetUsers) {
             this.internetUsers = internetUsers;
             return this;
         }
 
-        public CountryBuilder withAdultLiteracyRate (String adultLiteracyRate) {
+        public CountryBuilder withAdultLiteracyRate (BigDecimal adultLiteracyRate) {
             this.adultLiteracyRate = adultLiteracyRate;
             return this;
         }
